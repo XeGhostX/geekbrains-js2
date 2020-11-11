@@ -1,10 +1,22 @@
 const http = require('http')
 const fs = require('fs')
 
+const static_dir = './public'
 const server = http.createServer((req, res) => {
-  console.log('request: ok')
-  const content = fs.readFileSync(`./public/index.html`)
-  res.end(content)
+  url = req.url
+  if(url == '/') {
+    url = '/index.html'
+  }
+  console.log(`${req.method} ${url}`)
+
+  try {
+    const content = fs.readFileSync(static_dir + url)
+    res.end(content)  
+  } catch (err) {
+    res.statusMessage = 'Not found';
+    res.statusCode = 404;
+    res.end(); 
+  }
 })
 
 port = process.env.PORT || 3000
